@@ -1,0 +1,214 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'firebase_service.dart';
+import 'constants.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:hexcolor/hexcolor.dart';
+
+class HomePage extends StatefulWidget {
+  HomePage({Key? key}) : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  User? user = FirebaseAuth.instance.currentUser;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    CollectionReference rider = FirebaseFirestore.instance.collection("rider");
+    return Scaffold(
+        drawer: LeDrawer(),
+        appBar: AppBar(
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.logout,
+                color: Colors.white,
+              ),
+              onPressed: () async {
+                FirebaseService service = new FirebaseService();
+                await service.signOutFromGoogle();
+                Navigator.pushReplacementNamed(
+                    context, Constants.signInNavigate);
+              },
+            )
+          ],
+          backwardsCompatibility: false,
+          systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.blue),
+          title: Text("Home"),
+        ),
+        body: Center(
+          /*  child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(user!.email!),
+              Text(user!.displayName!),
+              CircleAvatar(
+                backgroundImage: NetworkImage(user!.photoURL!),
+                radius: 20,
+              )
+            ],
+          ), */
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              Flexible(
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(user!.photoURL!),
+                    radius: 40,
+                  ),
+                  title: Text(user!.displayName!),
+                  subtitle: Text(user!.email!),
+                ),
+              ),
+              Flexible(
+                flex: 3,
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: rider.snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasError) {
+                      return Text('Something went wrong');
+                    }
+
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Text("Loading");
+                    }
+
+                    return new Container(
+                        alignment: Alignment.topCenter,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: DataTable(
+                              columns: [
+                                DataColumn(label: Text('Junction')),
+                                DataColumn(label: Text('Speed')),
+                                DataColumn(label: Text('Turn Signal'))
+                              ],
+                              rows: _createRows(snapshot.data!),
+                            ),
+                          ),
+                        ));
+                  },
+                ),
+              )
+            ],
+          ),
+        ));
+  }
+
+  // le Rows For The Profile
+  List<DataRow> _createRows(QuerySnapshot snapshot) {
+    List<DataRow> newList = snapshot.docs.map((DocumentSnapshot document) {
+      //  GeoPoint geoPoint = document.data()!['junction'];
+      //    double lat = geoPoint.latitude;
+      //   double lng = geoPoint.longitude;
+
+      return new DataRow(cells: [
+        DataCell(Text("ok"
+            //   "$lat,$lng",
+            )),
+        DataCell(Text("ok"
+            // document.data()!['speed'].toString(),
+            )),
+        DataCell(Text("ok"
+            // document.data()!['turn_signal'].toString(),
+            )),
+      ]);
+    }).toList();
+
+    return newList;
+  }
+}
+
+// Drawer Class
+
+class LeDrawer extends StatelessWidget {
+  // navigates to a new page
+  void _pushPage(BuildContext context, Widget page) {
+    Navigator.of(context) /*!*/ .push(
+      MaterialPageRoute<void>(builder: (_) => page),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            child: Column(
+              children: [
+                Text("Eve Travel"),
+                Text("QR Code Right Here"),
+              ],
+            ),
+            decoration: BoxDecoration(
+              color: HexColor('#F7F7F7'),
+            ),
+          ),
+          Container(
+            child: Column(
+              children: [
+                ListTile(
+                  leading: Icon(Icons.person),
+                  title: Text("Profile"),
+                  onTap: () {
+                    //     _pushPage(context, ProfilePage());
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.home),
+                  title: Text("Home"),
+                  onTap: () {
+                    //     _pushPage(context, SCHomePage());
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.approval),
+                  title: Text("Badges"),
+                  onTap: () {
+                    //    _pushPage(context, FeedbackPage());
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.how_to_vote_outlined),
+                  title: Text("History"),
+                  onTap: () {
+                    //     _pushPage(context, VotePage());
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.account_balance_rounded),
+                  title: Text("Quests"),
+                  onTap: () {
+                    //     _pushPage(context, ClubsPage());
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.supervised_user_circle_rounded),
+                  title: Text("Help"),
+                  onTap: () {
+                    //   _pushPage(context, SCUserManagement());
+                  },
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}

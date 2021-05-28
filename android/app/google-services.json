@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "929466309683",
+    "project_id": "evetravel",
+    "storage_bucket": "evetravel.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:929466309683:android:c0f08ff9cd893b195c5746",
+        "android_client_info": {
+          "package_name": "dev.asmy.evetravel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "929466309683-gte5k0mq0qt46aoribat9eobjsulnq3e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.asmy.evetravel",
+            "certificate_hash": "52cd78792de48eed0e1e94467adac97c2de47f9a"
+          }
+        },
+        {
+          "client_id": "929466309683-ep7b1mputvdruu5rnlr7jsb6t5hth74p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvWZ0PPU6SsYgfOeZKMmsoVYhWiYx_AOw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "929466309683-ep7b1mputvdruu5rnlr7jsb6t5hth74p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
